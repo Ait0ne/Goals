@@ -1,15 +1,18 @@
 import React, {useState, useReducer, useRef, useEffect} from 'react';
 import {View, Animated} from 'react-native';
-import Icon from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
-
-import { styles } from './add-task-modal.styles'
-import TaskMainOptions from '../../components/TaskMainOptions/task-main-options.component';
-import NotificationOptions from '../../components/NotificationOptions/notification-options.component';
-import {useTasks} from '../../components/TasksProvider/tasks-provider.component';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Text } from 'react-native-animatable';
+
+import { styles } from './add-task-modal.styles';
+
+import TaskMainOptions from '../../components/TaskMainOptions/task-main-options.component';
+import NotificationOptions from '../../components/NotificationOptions/notification-options.component';
+import CloseIcon from '../../components/CloseIcon/close-icon.component';
+
+import {useTasks} from '../../components/TasksProvider/tasks-provider.component';
+import ModalNavigation from '../../components/ModalNavigation/modal-navigation.component';
 
 
 
@@ -55,14 +58,14 @@ let datepicker:Element|null=null
 
 const AddTaskModal:React.FC = () => {
     const [taskName, setTaskName] = useState('')
-    const [taskType, setTaskType] = useState<'main'|'goal'|'reminder'>('main')
+    const [taskType, setTaskType] = useState<'main'|'goal'|'reminder'>('goal')
     const [date, setDate] = useState(new Date())
-    const [initialTaskType, setInitialTaskType] = useState('main')
+    const [initialTaskType, setInitialTaskType] = useState('goal')
     const [showChooseDate, setShowChooseDate] = useState(false)
     const [notification, dispatch] = useReducer(notificationReducer, initialNotificationState)
     const scaleY = useRef(new Animated.Value(0)).current
     const navigation = useNavigation()
-    const {createTask, deleteAll, currentDate, currentTask, setCurrentDate, setCurrentTask, updateTask} = useTasks()
+    const {createTask, currentDate, currentTask, setCurrentDate, setCurrentTask, updateTask} = useTasks()
 
     useEffect(() => {
         if (currentTask) {
@@ -113,9 +116,6 @@ const AddTaskModal:React.FC = () => {
         navigation.goBack()
     }
 
-    const handleClose = () => {
-        navigation.goBack()
-    }
 
     const showDatePicker = () => {
         datepicker=(
@@ -127,7 +127,6 @@ const AddTaskModal:React.FC = () => {
             onChange={handleDateChange}
             />
         )
-        console.log(datepicker)
         setShowChooseDate(true)
     }
     const handleDateChange = (event: Event, date?:Date) => {
@@ -140,14 +139,10 @@ const AddTaskModal:React.FC = () => {
         datepicker=null
     }
 
-    console.log(datepicker)
 
     return (
         <View style={styles.screenContainer}>
-            <View style={styles.navigation}>
-                <Icon onPress={handleClose} name='close' size={35} color='#F07E44'/>
-                <Icon onPress={handleSubmit} name='check' size={35} color='#F07E44'/> 
-            </View>
+            <ModalNavigation closeIcon submitIcon handleSubmit={handleSubmit}/>
             <Text onPress={taskType==='reminder'? undefined : showDatePicker} style={[styles.header, taskType==='reminder'? styles.disabled : null]}>{moment(date).format('DD/MM/YYYY')}</Text>
             <TaskMainOptions  taskName={taskName} setTaskName={setTaskName} setTaskType={setTaskType} initialTaskType={initialTaskType}/>
             <Animated.View

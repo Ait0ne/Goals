@@ -74,7 +74,7 @@ const NotificationOptions: React.FC<NotificationOptionsProps> = ({dispatch, task
                 showDateTimePicker&&datepicker
             }
             <Text style={styles.header}>Напомню тебе про:</Text>
-            <Text style={styles.subheader}>{taskName}</Text>
+            <Text style={styles.subheader}  numberOfLines={2}>{taskName}</Text>
             <View style={styles.rowContainer}>
                 <Text style={[styles.text,styles.orangeText]}>Дата:</Text>
                 <Text style={styles.date} onPress={() => openDateTimePicker('date')}>{moment(notification.date).format('DD/MM/YYYY')}</Text>

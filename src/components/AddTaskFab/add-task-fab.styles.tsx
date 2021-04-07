@@ -10,6 +10,8 @@ export const stylesWithProps = (size:number) => StyleSheet.create({
         borderWidth:2,
         borderColor: '#F07E44',
         alignItems: "center",
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: 'whitesmoke',
+        elevation: 3
     }
 })

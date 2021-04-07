@@ -11,7 +11,10 @@ export const styles = StyleSheet.create({
     input: {
         fontSize: 16,
         lineHeight: 19,
-        marginLeft: 37
+        marginLeft: 37,
+        width:'80%',
+        maxHeight: 100,
+
     },
     button: {
         padding:0,

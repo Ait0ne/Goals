@@ -73,6 +73,8 @@ const TaskMainOptions:React.FC<TaskMainProps> = ({taskName, setTaskName, setTask
             value={taskName}
             style={styles.input}
             ref={inputRef}
+            multiline={true}
+            numberOfLines={4}
             />
             <ButtonGroup 
             buttons={buttons}

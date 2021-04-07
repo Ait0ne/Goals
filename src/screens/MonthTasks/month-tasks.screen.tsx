@@ -81,6 +81,7 @@ const MonthTasksScreen: React.FC = () => {
 
 
     const handleDayPress = (day:DateObject) => {
+        console.log()
         navigation.navigate('dailyTasksScreen', {date: moment(day.dateString).toDate().getTime()})
     }
 
@@ -135,7 +136,6 @@ const MonthTasksScreen: React.FC = () => {
                         textAlign: 'center',
                     },
                     week: {
-                        marginTop: 55,
                         flexDirection: 'row',
                         justifyContent: 'space-around',
                         marginBottom: 10
@@ -143,8 +143,8 @@ const MonthTasksScreen: React.FC = () => {
                 },
                 'stylesheet.calendar.main': {
                     week: {
-                        marginTop: 15,
-                        marginBottom: 15,
+                        marginTop: 7,
+                        marginBottom: 7,
                         flexDirection: 'row',
                         justifyContent: 'space-around'
                       },

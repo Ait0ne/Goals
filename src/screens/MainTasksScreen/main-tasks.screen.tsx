@@ -4,7 +4,11 @@ import {useNavigation} from '@react-navigation/native'
 
 import Logo from '../../components/Logo/logo.component';
 import AddTaskFab from '../../components/AddTaskFab/add-task-fab.component';
+import Header from '../../components/Header/header.component';
 import {styles} from './main-tasks.styles';
+
+
+
 
 const MainTasksScreen:React.FC = () => {
     const navigation = useNavigation()
@@ -31,6 +35,7 @@ const MainTasksScreen:React.FC = () => {
 
     return (
         <View style={styles.screenContainer}>
+            <Header/>
             <Logo/>
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity style={styles.button} onPress={() => handleRoute('dailyTasksScreen')}>

@@ -10,6 +10,8 @@ import DailyTasksScreen from './src/screens/DailyTasks/daily-tasks.screen';
 import WeeklyTasksScreen from './src/screens/WeeklyTasks/weekly-tasks.screen';
 import MonthTasksScreen from './src/screens/MonthTasks/month-tasks.screen';
 import YearTasksScreen from './src/screens/YearTasksScreen/year-tasks.screen';
+import SearchModal from './src/screens/SearchModal/search-modal';
+
 
 import {AuthProvider} from './src/components/AuthProvider/auth-provider.component';
 import {navigationRef, isMountedRef} from './RootNavigation';
@@ -39,7 +41,7 @@ const App:React.FC = () => {
     return (
       <MainStack.Navigator  initialRouteName='auth' mode='card'>
             <MainStack.Screen  name='auth' component={AuthScreen} options={{headerShown:false}}/>
-            <MainStack.Screen name='mainTasksScreen' component={MainTasksScreen} options={{headerShown:false}}/>
+            <MainStack.Screen name='mainTasksScreen'  component={MainTasksScreen} options={{headerShown:false}}/>
             <MainStack.Screen name='dailyTasksScreen' component={DailyTasksScreen} options={{headerShown:false}}/>
             <MainStack.Screen name='weeklyTasksScreen' component={WeeklyTasksScreen} options={{headerShown:false}}/>
             <MainStack.Screen name='monthTasksScreen' component={MonthTasksScreen} options={{headerShown:false}}/>
@@ -57,6 +59,7 @@ const App:React.FC = () => {
           <Stack.Navigator  initialRouteName='main' mode='modal'>
               <Stack.Screen name='main' component={MainStackScreen} options={{headerShown:false}}/>
               <Stack.Screen name='addTaskModal' component={AddTaskModal} options={{headerShown:false}}/>
+              <Stack.Screen name='searchModal' component={SearchModal} options={{headerShown:false}}/>
           </Stack.Navigator>
         </NavigationContainer>
       </TasksProvider>

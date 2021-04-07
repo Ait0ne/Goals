@@ -89,7 +89,12 @@ const DailyTasksScreen: React.FC = () => {
                 <Animated.View style={[styles.crossOutLine, {width: animatedWidth[index]}]}>
                 </Animated.View>
                 <View style={styles.timeContainer}>
-                    <Text style={styles.time}>{item.taskType==='reminder'? moment(item.notificationTime).format('HH:mm'): <CircleIcon height={20} type={item.taskType}/>}</Text>
+                    <Text 
+                    style={styles.time}
+                    lineBreakMode='head'
+                    >
+                        {item.taskType==='reminder'? moment(item.notificationTime).format('HH:mm'): <CircleIcon height={20} type={item.taskType}/>}
+                    </Text>
                 </View>
                 <View style={styles.textContainer} >
                     <Text onPress={ () => handleTaskOpen(item)}  style={[styles.text, item.taskType==='main'? styles.orangeText:null]}>{item.name}</Text>
@@ -117,11 +122,13 @@ const DailyTasksScreen: React.FC = () => {
 
     return (
         <View style={styles.screenContainer}>
-            <Image 
-            source={require('./goals.png')}
-            style={styles.logo}
-            />
-            <Text style={styles.header}>{moment(screenDate).isSame(Date.now(), 'day')? 'Today': moment(screenDate).format('DD/MM/YYYY')}</Text>
+            <View style={styles.headerContainer}>
+                <Image 
+                source={require('./goals.png')}
+                style={styles.logo}
+                />
+                <Text style={styles.header}>{moment(screenDate).isSame(Date.now(), 'day')? 'Today': moment(screenDate).format('DD/MM/YYYY')}</Text>
+            </View>
             <FlatList
             data={currentTasks}
             keyExtractor={(item)=>  item._id.toHexString()}

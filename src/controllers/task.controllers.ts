@@ -1,11 +1,21 @@
-import Realm, {Configuration, Results, UpdateMode} from 'realm';
+import Realm, {Configuration} from 'realm';
 import PushNotification from 'react-native-push-notification';
 import {ObjectID} from 'bson';
+import moment from 'moment';
 
 import {TaskInfo} from '../components/TasksProvider/tasks-provider.component';
 import {Task} from '../schemas/task.schema';
 import {realmApp} from '../components/AuthProvider/auth-provider.component';
 import {navigate} from '../../RootNavigation';
+
+const dailyNotificationTime = {
+    hour: 0,
+    min: 1,
+    sec: 0
+}
+
+
+
 
 PushNotification.configure({
     onNotification:(notification:any)=> {
@@ -15,8 +25,10 @@ PushNotification.configure({
                 console.log(n)
             })
         })
+        console.log(notification.id)
         navigate('dailyTasksScreen', {date: new Date().getTime()})
         if (notification.action==='Выполнено'&&realmApp.currentUser) {
+            navigate('dailyTasksScreen', {date: new Date().getTime()})
             const config:Configuration = {
                 schema: [Task.taskSchema],
                 sync: {
@@ -45,7 +57,6 @@ PushNotification.configure({
         
     },
     onAction: (notification:any) =>  {
-        console.log(1)
         if (notification.action==='Выполнено') {
           console.log(notification)
         }   
@@ -71,16 +82,29 @@ PushNotification.configure({
                     taskType: taskType,
                     notificationId: notificationId,
                     id: taskId,
-
+                    
                 }),taskId?true:false
             )
             const currentDate = new Date()
             let scheduledDate:Date;
+            let timeoutTime: number;
             if (currentDate.getFullYear()===date.getFullYear()&&currentDate.getMonth()===date.getMonth()&&currentDate.getDate()===date.getDate()) {
                 scheduledDate=new Date(Date.now() + 10*1000)
+                timeoutTime = moment(scheduledDate)
+                .add(1, 'day')
+                .set('hour', dailyNotificationTime.hour)
+                .set('minute', dailyNotificationTime.min)
+                .set('second', dailyNotificationTime.sec)
+                .toDate().getTime() - scheduledDate.getTime()
+                console.log(timeoutTime)
             } else {
-                date.setHours(0,1,0)
+                date.setHours(
+                    dailyNotificationTime.hour,
+                    dailyNotificationTime.min,
+                    dailyNotificationTime.sec
+                )
                 scheduledDate=date
+                timeoutTime = 24*59*1000
             }
             PushNotification.localNotificationSchedule({
                 title: taskType==='main'? 'Главное' : 'Цель',
@@ -92,8 +116,9 @@ PushNotification.configure({
                 date: scheduledDate,
                 id: notificationId,
                 color: taskType==='main'? '#F07E44' : '#ffffff',
-                vibrate: false
-            })
+                vibrate: false,
+                timeoutAfter: timeoutTime
+            }) 
         } else {
             const notificationId = new Date().getTime()%10**9
             realm.create(
@@ -111,8 +136,9 @@ PushNotification.configure({
                 }), taskId?true:false
             )
             const scheduledDate = notification.time
+            const timeoutTime = moment(notification.time).endOf('day').toDate().getTime() - notification.time.getTime()
             scheduledDate.setFullYear(notification.date.getFullYear(), notification.date.getMonth(), notification.date.getDate())
-
+            
             PushNotification.localNotificationSchedule({
                 title: 'Напоминание',
                 autoCancel: false,
@@ -124,7 +150,8 @@ PushNotification.configure({
                 vibrate: true,
                 playSound: true,
                 repeatType: notification.repeatType==='single'? undefined : notification.repeatType!=='year'? notification.repeatType : 'time',
-                repeatTime: notification.repeatType==='year'? 31556952000 : undefined
+                repeatTime: notification.repeatType==='year'? 31556952000 : undefined,
+                timeoutAfter: timeoutTime
             })
         }
     })

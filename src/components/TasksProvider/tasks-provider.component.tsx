@@ -31,7 +31,8 @@ interface ContextProps  {
     setCurrentTask: React.Dispatch<React.SetStateAction<Task | undefined>>,
     currentDate: Date|undefined,
     setCurrentDate: React.Dispatch<React.SetStateAction<Date|undefined>>,
-    getTasksForTheDay: (date:Date) => Task[]
+    getTasksForTheDay: (date:Date) => Task[],
+    searchForTasks: (searchText: string, searchClosedTasks?:boolean) => Object[]
 }
 
 
@@ -49,6 +50,7 @@ const TasksProvider: React.FC<TasksProviderProps> = ({children}) => {
     const [tasks, setTasks] = useState<Object[]>()
     const [currentTask, setCurrentTask] = useState<Task|undefined>()
     const [currentDate, setCurrentDate] = useState<Date>()
+
 
     const realmRef = useRef<Realm>(null)
 
@@ -77,8 +79,6 @@ const TasksProvider: React.FC<TasksProviderProps> = ({children}) => {
         
         Realm.open(config)
         .then((openedRealm) => {
-            console.log(111)
-            console.log(openedRealm)
             if (canceled) {
                 openedRealm.close()
             };
@@ -88,11 +88,9 @@ const TasksProvider: React.FC<TasksProviderProps> = ({children}) => {
             setTasks([...syncTasks])
             openedRealm.addListener('change', () => {
                 setTasks([...syncTasks])
-                console.log('change')
             })
         })
         .catch((err) => {
-            console.log(222)
             console.log(err)
         })
 
@@ -108,6 +106,7 @@ const TasksProvider: React.FC<TasksProviderProps> = ({children}) => {
 
 
     }, [user])
+
 
     const createTask = ({name, date, notification, taskType}:TaskInfo) => {
         const realm = realmRef.current
@@ -178,7 +177,14 @@ const TasksProvider: React.FC<TasksProviderProps> = ({children}) => {
         return tasksForTheDay as Task[]
     }
     
-
+    const searchForTasks = (searchText: string, searchClosedTasks?: boolean): Object[] => {
+        const realm = realmRef.current
+        if (realm) {
+            const tasksFound = realm.objects('Task').filtered(`name CONTAINS[c] '${searchText}'${!searchClosedTasks ? " && taskStatus == 'active'": ""}`)
+            return [...tasksFound]
+        }
+        return []
+    }
 
 
     return (
@@ -194,7 +200,8 @@ const TasksProvider: React.FC<TasksProviderProps> = ({children}) => {
             currentTask,
             setCurrentTask,
             closeTask,
-            getTasksForTheDay
+            getTasksForTheDay,
+            searchForTasks
         }}
         >
             {children}

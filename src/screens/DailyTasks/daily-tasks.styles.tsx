@@ -1,11 +1,22 @@
-import {StyleSheet} from 'react-native';
+import { relativeTimeRounding } from 'moment';
+import {StyleSheet, Dimensions} from 'react-native';
+
+const height = Dimensions.get('window').height
+
 
 export const styles = StyleSheet.create({
     screenContainer: {
         justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingTop: 52,
-        minHeight: '100%'
+        // paddingTop: 52,
+        minHeight: height
+    },
+    headerContainer: {
+        width: '100%',
+        height: 100,
+        position: 'relative',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     logo: {
         position: 'absolute',
@@ -25,7 +36,7 @@ export const styles = StyleSheet.create({
         width: '100%',
         minHeight: 40,
         flexDirection:'row',
-        marginBottom: 10
+        marginBottom: 20
     },
     timeContainer: {
         width: '20%',
@@ -44,7 +55,8 @@ export const styles = StyleSheet.create({
     },
     text: {
         fontSize: 18,
-        color: '#605A5A'
+        color: '#605A5A',
+        
     },
     orangeText: {
         color: '#F07E44'
@@ -55,7 +67,8 @@ export const styles = StyleSheet.create({
         alignItems: 'flex-start'
     },
     list: {
-        marginTop: 40
+        height: height - 200,
+        flexGrow: 0
     },
     fabContainer: {
         position: 'absolute',
