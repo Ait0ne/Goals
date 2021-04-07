@@ -6,6 +6,7 @@ import {useAuth} from '../AuthProvider/auth-provider.component';
 import {Task} from '../../schemas/task.schema';
 import {createNewTask, updateTaskInfo} from '../../controllers/task.controllers';
 import {INotification} from '../../screens/addTaskModal/add-task-modal';
+import RNDisableBatteryOptimizationsAndroid from 'react-native-disable-battery-optimizations-android';
 
 
 interface TasksProviderProps {
@@ -111,6 +112,12 @@ const TasksProvider: React.FC<TasksProviderProps> = ({children}) => {
 
     const createTask = ({name, date, notification, taskType}:TaskInfo) => {
         const realm = realmRef.current
+        RNDisableBatteryOptimizationsAndroid.isBatteryOptimizationEnabled().then((isEnabled: boolean)=>{
+            if(isEnabled){
+                RNDisableBatteryOptimizationsAndroid.enableBackgroundServicesDialogue();
+                // RNDisableBatteryOptimizationsAndroid.openBatteryModal();
+            }
+        });
         if (user) {
             createNewTask({name,date,notification,realm,taskType, userId: user.id})
         }

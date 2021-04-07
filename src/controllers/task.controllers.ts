@@ -50,8 +50,22 @@ PushNotification.configure({
           console.log(notification)
         }   
     },
-    requestPermissions: false
+    requestPermissions: false,
+    
   })
+
+
+  PushNotification.createChannel(
+    {
+      channelId: "goals", // (required)
+      channelName: "Goals", // (required)
+      channelDescription: "Goals app notifications", // (optional) default: undefined. // (optional) default: true
+      soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
+      importance: 4, // (optional) default: 4. Int value of the Android notification importance
+      vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
+    },
+    (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+  );
   
 
   export const createNewTask = ({date,name,notification,realm,taskType, userId, taskId}: TaskInfo&{realm:Realm|null, userId: string, taskId?:ObjectID}) => {
@@ -84,14 +98,16 @@ PushNotification.configure({
             }
             PushNotification.localNotificationSchedule({
                 title: taskType==='main'? 'Главное' : 'Цель',
+                channelId: 'goals',
                 autoCancel: false,
                 ongoing: taskType==='main'? true:false,
                 message: name,
                 tag: 'task',
-                actions: "['Выполнено']",
+                actions: ['Выполнено'],
                 date: scheduledDate,
                 id: notificationId,
                 color: taskType==='main'? '#F07E44' : '#ffffff',
+                allowWhileIdle: true,
                 vibrate: false
             })
         } else {
@@ -115,6 +131,7 @@ PushNotification.configure({
 
             PushNotification.localNotificationSchedule({
                 title: 'Напоминание',
+                channelId: 'goals',
                 autoCancel: false,
                 ongoing: false,
                 message: name,
@@ -124,7 +141,8 @@ PushNotification.configure({
                 vibrate: true,
                 playSound: true,
                 repeatType: notification.repeatType==='single'? undefined : notification.repeatType!=='year'? notification.repeatType : 'time',
-                repeatTime: notification.repeatType==='year'? 31556952000 : undefined
+                repeatTime: notification.repeatType==='year'? 31556952000 : undefined,
+                allowWhileIdle: true
             })
         }
     })
